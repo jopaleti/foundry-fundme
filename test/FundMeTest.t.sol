@@ -10,11 +10,13 @@ contract FundMeTest is Test {
 
     address USER = makeAddr("user");
     uint256 constant SEND_VALUE = 0.1 ether;
+    uint256 constant STARTING_BALANCE = 10 ether;
 
     function setUp() external {
         // address priceFeedAddress = vm.envAddress("ethUsdPriceFeed");
         DeployFundMe deployFundMe = new DeployFundMe();
         fundMe = deployFundMe.run();
+        vm.deal(USER, STARTING_BALANCE);
         // fundMe = new FundMe(priceFeedAddress);
     }
 
@@ -39,9 +41,9 @@ contract FundMeTest is Test {
 
     function testFundUpdatesFundedDataStructure() public {
         vm.prank(USER); // The next TX will be sent by USER
-        fundMe.fund{value: 10e18}();
+        fundMe.fund{value: SEND_VALUE}();
 
         uint256 amountFunded = fundMe.getAddressToAmountFunded(USER);
-        assertEq(amountFunded, 10e18);
+        assertEq(amountFunded, SEND_VALUE);
     }
 }
